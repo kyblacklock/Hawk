@@ -563,41 +563,64 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 4rem;
-            left: 6rem;
+        /* Scroll Progress Indicator */
+        .scroll-progress {
+            position: fixed;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
             opacity: 0;
             animation: fadeIn 1s ease 2.5s forwards;
         }
 
-        .scroll-progress {
-            width: 60px;
-            height: 2px;
+        .scroll-track {
+            width: 1px;
+            height: 120px;
             background: var(--graphite);
             position: relative;
             overflow: hidden;
         }
 
-        .scroll-progress-bar {
+        .scroll-track::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            height: 100%;
-            width: 0%;
+            width: 100%;
+            height: var(--scroll-progress, 0%);
             background: var(--white);
-            transition: width 0.1s ease;
+            transition: height 0.15s ease-out;
         }
 
-        .scroll-text {
+        .scroll-marker {
+            width: 5px;
+            height: 5px;
+            border: 1px solid var(--steel);
+            transform: rotate(45deg);
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .scroll-marker.active {
+            border-color: var(--white);
+            background: var(--white);
+        }
+
+        .scroll-percent {
             font-size: 9px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
+            font-family: var(--mono);
+            letter-spacing: 0.1em;
             color: var(--steel);
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s ease;
+        }
+
+        .scroll-progress:hover .scroll-percent {
+            color: var(--ash);
         }
 
         /* Statement Section */
@@ -934,6 +957,184 @@
             background: var(--steel);
         }
 
+        /* Product Explorer */
+        .product-explorer {
+            padding: 6rem 6rem;
+            border-top: 1px solid var(--graphite);
+            position: relative;
+        }
+
+        .product-explorer .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-visual {
+            position: relative;
+        }
+
+        .product-visual::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at center, transparent 40%, var(--black) 75%);
+            pointer-events: none;
+        }
+
+        .product-image {
+            width: 100%;
+            max-height: 520px;
+            object-fit: contain;
+            opacity: 0.9;
+        }
+
+        .product-hotspot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            transform: translate(-50%, -50%);
+            cursor: none;
+            z-index: 10;
+        }
+
+        .hotspot-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--white);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
+        }
+
+        .hotspot-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s var(--ease-out-expo);
+        }
+
+        .product-hotspot:hover .hotspot-dot,
+        .product-hotspot.active .hotspot-dot {
+            transform: translate(-50%, -50%) scale(1.3);
+            box-shadow: 0 0 12px rgba(255,255,255,0.5);
+        }
+
+        .product-hotspot:hover .hotspot-ring,
+        .product-hotspot.active .hotspot-ring {
+            border-color: var(--white);
+            transform: translate(-50%, -50%) scale(1.4);
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .product-detail {
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--graphite);
+            cursor: none;
+            transition: all 0.3s ease;
+        }
+
+        .product-detail:first-child {
+            border-top: 1px solid var(--graphite);
+        }
+
+        .product-detail:hover,
+        .product-detail.active {
+            padding-left: 1rem;
+            border-color: var(--iron);
+        }
+
+        .product-detail.active {
+            border-color: var(--steel);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0;
+            transition: margin 0.3s ease;
+        }
+
+        .product-detail.active .detail-header {
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-number {
+            font-size: 9px;
+            color: var(--iron);
+            font-variant-numeric: tabular-nums;
+            min-width: 20px;
+        }
+
+        .product-detail.active .detail-number {
+            color: var(--steel);
+        }
+
+        .detail-title {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--silver);
+            transition: color 0.3s ease;
+        }
+
+        .product-detail:hover .detail-title,
+        .product-detail.active .detail-title {
+            color: var(--white);
+        }
+
+        .detail-text {
+            font-size: 11px;
+            color: var(--steel);
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s var(--ease-out-expo), opacity 0.3s ease, padding 0.3s ease;
+            padding-left: calc(20px + 1rem);
+        }
+
+        .product-detail.active .detail-text {
+            max-height: 100px;
+            opacity: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .product-explorer { padding: 4rem 3rem; }
+            .product-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .product-image { max-height: 400px; }
+        }
+
+        @media (max-width: 768px) {
+            .product-explorer { padding: 3rem 2rem; }
+            .product-image { max-height: 320px; }
+        }
+
         /* Specifications */
         .specifications {
             padding: 10rem 6rem;
@@ -1185,21 +1386,52 @@
             75% { transform: translateX(-1px); }
         }
 
+        .footer-logo::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--white);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .footer-logo.clicked::before {
+            animation: clickPulse 0.5s var(--ease-out-expo) forwards;
+        }
+
+        @keyframes clickPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+
         .footer-logo-hint {
             position: absolute;
-            bottom: -30px;
+            bottom: -28px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 8px;
-            letter-spacing: 0.2em;
-            color: var(--iron);
+            letter-spacing: 0.15em;
+            color: var(--steel);
             white-space: nowrap;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
         }
 
         .footer-logo:hover .footer-logo-hint {
             opacity: 1;
+            transform: translateX(-50%) translateY(4px);
         }
 
         .footer-links {
@@ -1411,7 +1643,8 @@
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .hero-content { padding: 8rem 2rem 3rem 2rem; }
-            .scroll-indicator { left: 2rem; bottom: 2rem; }
+            .scroll-progress { right: 1rem; }
+            .scroll-track { height: 80px; }
             .capabilities-grid { grid-template-columns: 1fr; }
             .capability { border-right: none !important; padding: 3rem 2rem; }
             .specs-grid { grid-template-columns: 1fr; }
@@ -1474,6 +1707,7 @@
         <ul class="nav-links">
             <li><a href="#capabilities">Capabilities</a></li>
             <li><a href="#companion">Companion</a></li>
+            <li><a href="#product">Anatomy</a></li>
             <li><a href="#specifications">Specifications</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -1520,13 +1754,14 @@
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <div class="scroll-progress">
-                <div class="scroll-progress-bar"></div>
-            </div>
-            <span class="scroll-text">Scroll to explore</span>
-        </div>
     </section>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress">
+        <div class="scroll-marker"></div>
+        <div class="scroll-track"></div>
+        <span class="scroll-percent">0%</span>
+    </div>
 
     <section class="statement">
         <div class="statement-text reveal">
@@ -1677,9 +1912,86 @@
         </div>
     </section>
 
+    <section class="product-explorer" id="product">
+        <div class="section-header">
+            <div>
+                <p class="section-tag">03 — Anatomy</p>
+                <h2 class="section-title">Built to Evolve</h2>
+            </div>
+        </div>
+        <div class="product-layout">
+            <div class="product-visual">
+                <img src="Hawk Product Visual.jpg" alt="Hawk Cyborg Anatomy" class="product-image">
+
+                <div class="product-hotspot" data-detail="0" style="top: 16%; left: 70%;">
+                    <span class="hotspot-dot"></span>
+                    <span class="hotspot-ring"></span>
+                </div>
+
+                <div class="product-hotspot" data-detail="1" style="top: 10%; left: 58%;">
+                    <span class="hotspot-dot"></span>
+                    <span class="hotspot-ring"></span>
+                </div>
+
+                <div class="product-hotspot" data-detail="2" style="top: 42%; left: 56%;">
+                    <span class="hotspot-dot"></span>
+                    <span class="hotspot-ring"></span>
+                </div>
+
+                <div class="product-hotspot" data-detail="3" style="top: 48%; left: 32%;">
+                    <span class="hotspot-dot"></span>
+                    <span class="hotspot-ring"></span>
+                </div>
+
+                <div class="product-hotspot" data-detail="4" style="top: 88%; left: 45%;">
+                    <span class="hotspot-dot"></span>
+                    <span class="hotspot-ring"></span>
+                </div>
+            </div>
+
+            <div class="product-details">
+                <div class="product-detail" data-index="0">
+                    <div class="detail-header">
+                        <span class="detail-number">01</span>
+                        <h3 class="detail-title">Apex Vision</h3>
+                    </div>
+                    <p class="detail-text">8K multispectral imaging with thermal overlay. Detects movement from 12km at 240fps.</p>
+                </div>
+                <div class="product-detail" data-index="1">
+                    <div class="detail-header">
+                        <span class="detail-number">02</span>
+                        <h3 class="detail-title">Neural Core</h3>
+                    </div>
+                    <p class="detail-text">Quantum-hybrid processing with sub-12ms response. Direct cognitive bridge for intuitive control.</p>
+                </div>
+                <div class="product-detail" data-index="2">
+                    <div class="detail-header">
+                        <span class="detail-number">03</span>
+                        <h3 class="detail-title">Armor Chassis</h3>
+                    </div>
+                    <p class="detail-text">Titanium-carbon composite shell with self-healing nano-coating. IP68 all-weather rated.</p>
+                </div>
+                <div class="product-detail" data-index="3">
+                    <div class="detail-header">
+                        <span class="detail-number">04</span>
+                        <h3 class="detail-title">Wing Array</h3>
+                    </div>
+                    <p class="detail-text">Biomimetic feather-blade system. Near-silent 23dB operation with 72hr endurance.</p>
+                </div>
+                <div class="product-detail" data-index="4">
+                    <div class="detail-header">
+                        <span class="detail-number">05</span>
+                        <h3 class="detail-title">Grip System</h3>
+                    </div>
+                    <p class="detail-text">Hydraulic talons with haptic feedback. 2.3kg payload with pressure-sensitive grip.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="specifications" id="specifications">
         <div class="specs-header">
-            <p class="section-tag">03 — Technical</p>
+            <p class="section-tag">04 — Technical</p>
             <h2 class="section-title">Specifications</h2>
         </div>
         <div class="specs-grid">
@@ -1764,7 +2076,7 @@
                       stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
                 <circle class="logo-eye" cx="25" cy="20" r="2" fill="white" fill-opacity="0.5"/>
             </svg>
-            <span class="footer-logo-hint">CLICK ME</span>
+            <span class="footer-logo-hint">Click for a surprise</span>
         </div>
         <div class="footer-links">
             <a href="#">Privacy</a>
@@ -1804,7 +2116,7 @@
         animateCursor();
 
         // Cursor hover effects
-        const hoverElements = document.querySelectorAll('a, button, .capability, .spec, .metric, .footer-logo');
+        const hoverElements = document.querySelectorAll('a, button, .capability, .spec, .metric, .footer-logo, .product-hotspot, .product-detail');
         hoverElements.forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -1812,10 +2124,20 @@
 
 
         // Scroll Progress
-        const scrollProgressBar = document.querySelector('.scroll-progress-bar');
+        const scrollTrack = document.querySelector('.scroll-track');
+        const scrollPercent = document.querySelector('.scroll-percent');
+        const scrollMarker = document.querySelector('.scroll-marker');
+
         window.addEventListener('scroll', () => {
-            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-            scrollProgressBar.style.width = scrollPercent + '%';
+            const percent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            scrollTrack.style.setProperty('--scroll-progress', percent + '%');
+            scrollPercent.textContent = Math.round(percent) + '%';
+
+            if (percent > 2) {
+                scrollMarker.classList.add('active');
+            } else {
+                scrollMarker.classList.remove('active');
+            }
         });
 
         // Reveal animations
@@ -1877,6 +2199,36 @@
             }
         });
 
+        // Product Explorer
+        const hotspots = document.querySelectorAll('.product-hotspot');
+        const details = document.querySelectorAll('.product-detail');
+
+        function activateItem(index) {
+            hotspots.forEach(h => h.classList.remove('active'));
+            details.forEach(d => d.classList.remove('active'));
+
+            const hotspot = document.querySelector(`.product-hotspot[data-detail="${index}"]`);
+            const detail = document.querySelector(`.product-detail[data-index="${index}"]`);
+
+            if (hotspot) hotspot.classList.add('active');
+            if (detail) detail.classList.add('active');
+        }
+
+        function deactivateAll() {
+            hotspots.forEach(h => h.classList.remove('active'));
+            details.forEach(d => d.classList.remove('active'));
+        }
+
+        hotspots.forEach(hotspot => {
+            hotspot.addEventListener('mouseenter', () => activateItem(hotspot.dataset.detail));
+            hotspot.addEventListener('mouseleave', deactivateAll);
+        });
+
+        details.forEach(detail => {
+            detail.addEventListener('mouseenter', () => activateItem(detail.dataset.index));
+            detail.addEventListener('mouseleave', deactivateAll);
+        });
+
         // Number counter animation
         const numbers = document.querySelectorAll('.metric-value .number[data-value]');
         const numberObserver = new IntersectionObserver((entries) => {
@@ -1915,33 +2267,25 @@
         const footerLogo = document.getElementById('footer-logo');
         const flyingHawk = document.querySelector('.flying-hawk');
         const secretMessage = document.querySelector('.secret-message');
-        let clickCount = 0;
-        let clickTimer;
 
         footerLogo.addEventListener('click', () => {
-            clickCount++;
+            // Trigger pulse animation
+            footerLogo.classList.remove('clicked');
+            void footerLogo.offsetWidth;
+            footerLogo.classList.add('clicked');
 
-            clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => {
-                clickCount = 0;
-            }, 500);
+            // Trigger the flying hawk
+            flyingHawk.classList.remove('active');
+            void flyingHawk.offsetWidth;
+            flyingHawk.classList.add('active');
 
-            if (clickCount >= 3) {
-                // Trigger the flying hawk
-                flyingHawk.classList.remove('active');
-                void flyingHawk.offsetWidth; // Force reflow
-                flyingHawk.classList.add('active');
-
-                // Show secret message
+            // Show secret message
+            setTimeout(() => {
+                secretMessage.classList.add('visible');
                 setTimeout(() => {
-                    secretMessage.classList.add('visible');
-                    setTimeout(() => {
-                        secretMessage.classList.remove('visible');
-                    }, 3000);
-                }, 1500);
-
-                clickCount = 0;
-            }
+                    secretMessage.classList.remove('visible');
+                }, 3000);
+            }, 1500);
         });
 
         // Logo eye follows cursor
